@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>mObywatel 3.0 — prototyp koncepcyjny</title>
+<style>
+:root{
+  --navy:#0B2A4A; --muted:#4A5A6B; --line:#E2E7EE; --line2:#C9D3DF;
+  --bg:#F4F6F9; --card:#FFFFFF; --ai:#0F5FA8; --aiSoft:#EAF2FB;
+  --red:#C8102E; --ok:#1B8A4B; --warn:#B26A00; --warnSoft:#FFF1DC; --warnText:#8A4B00;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--navy);background:#DDE3EA;display:flex;align-items:center;justify-content:center}
+button,input{font-family:inherit;font-size:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--ai);outline-offset:2px}
+.phone{width:390px;height:844px;max-height:100vh;background:var(--bg);border-radius:36px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(11,42,74,.25);position:relative}
+@media (max-width:500px){body{background:var(--bg);display:block}.phone{width:100%;height:100vh;height:100dvh;max-height:none;border-radius:0;box-shadow:none}}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 12px;background:#fff;border-bottom:1px solid var(--line)}
+.brand{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.brand span{color:var(--red)}
+.tag{font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--muted)}
+main{flex:1;overflow-y:auto;padding:16px 16px 24px;display:flex;flex-direction:column;gap:14px}
+nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#fff;border-top:1px solid var(--line);padding:4px 4px calc(8px + env(safe-area-inset-bottom))}
+nav button{min-height:58px;border:none;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--muted);border-top:3px solid transparent}
+nav button[aria-current="page"]{color:var(--navy);font-weight:700;border-top-color:var(--red)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.ai-label{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--ai);letter-spacing:.04em}
+.h1{font-size:20px;font-weight:700;line-height:1.3;margin:0}
+.h2{font-size:16px;font-weight:700;margin:4px 0 0}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.xs{font-size:11px}
+p{margin:0;line-height:1.5}
+.btn{min-height:46px;padding:0 18px;border-radius:23px;border:none;background:var(--navy);color:#fff;font-weight:600;font-size:14px}
+.btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--navy)}
+.btn.soft{background:#fff;color:var(--navy);border:1px solid var(--line2);font-weight:500}
+.btn.link{background:none;color:var(--ai);padding:0 4px;font-weight:500}
+.btn.block{width:100%}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tile{min-height:86px;border-radius:14px;border:1px solid var(--line2);background:#fff;color:var(--navy);font-size:13px;font-weight:600;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;padding:12px;text-align:left}
+.tile.dark{background:var(--navy);color:#fff;border:none}
+.big{min-height:140px;border-radius:18px;font-size:19px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:2px solid var(--navy);background:#fff;color:var(--navy)}
+.big.dark{background:var(--navy);color:#fff}
+.big.blue{background:var(--ai);border-color:var(--ai);color:#fff}
+.search{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 16px;border-radius:26px;border:1px solid var(--line2);background:#fff;color:var(--muted);font-size:14px;text-align:left;width:100%}
+.status{display:flex;align-items:center;gap:10px;min-height:44px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;text-align:left;font-size:13px;color:var(--navy);width:100%}
+.dot{width:10px;height:10px;border-radius:5px;flex-shrink:0}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar>div{height:6px;background:var(--ai)}
+.toggle{min-height:44px;padding:0 14px;border-radius:22px;border:1px solid var(--navy);font-size:13px;font-weight:600;background:#fff;color:var(--navy)}
+.toggle[aria-pressed="true"]{background:var(--navy);color:#fff}
+.idcard{border-radius:20px;background:var(--navy);color:#fff;padding:18px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
+.idcard .wm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;letter-spacing:.1em;color:rgba(255,255,255,.07);transform:rotate(-18deg);pointer-events:none;white-space:nowrap}
+.badge{font-size:10px;font-weight:800;letter-spacing:.08em;padding:4px 8px;border-radius:6px;background:#fff;color:var(--navy)}
+.lbl{font-size:11px;color:#B9C6D6}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:4px;border-radius:14px;background:var(--line)}
+.seg button{min-height:44px;border-radius:10px;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--navy)}
+.seg button[aria-pressed="true"]{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.bubble{border-radius:16px 16px 16px 4px;background:#fff;border:1px solid var(--line);padding:14px;font-size:14px;line-height:1.5;display:flex;flex-direction:column;gap:10px}
+.bubble.me{align-self:flex-end;max-width:82%;background:var(--navy);color:#fff;border:none;border-radius:16px 16px 4px 16px;padding:12px 14px}
+.bubble ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.chip{min-height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--ai);background:#fff;color:var(--ai);font-size:14px;text-align:left}
+.composer{display:flex;gap:8px;align-items:center}
+.composer input{flex:1;min-height:48px;padding:0 16px;border-radius:24px;border:1px solid var(--line2);font-size:15px;color:var(--navy);background:#fff}
+.round{width:48px;height:48px;border-radius:24px;border:none;background:var(--ai);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.field{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.field input{border:1px solid var(--line2);border-radius:8px;min-height:40px;padding:0 10px;font-size:15px;color:var(--navy)}
+.aiflag{align-self:flex-start;font-size:11px;font-weight:700;color:var(--warnText);background:var(--warnSoft);padding:3px 8px;border-radius:6px}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.steps div{height:6px;border-radius:3px;background:var(--line2)}
+.steps div.on{background:var(--ai)}
+.pay{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pay button{min-height:52px;border-radius:12px;border:1px solid var(--line2);background:#fff;font-weight:700;color:var(--navy)}
+.pay button[aria-pressed="true"]{border:2px solid var(--navy)}
+.okicon{width:64px;height:64px;border-radius:32px;background:#E3F3EA;color:#1B6B3A;display:flex;align-items:center;justify-content:center}
+.back{align-self:flex-start;min-height:44px;border:none;background:none;color:var(--ai);font-size:14px;display:flex;align-items:center;gap:4px;padding:0}
+.list-item{display:flex;flex-direction:column;gap:8px;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:#fff;text-align:left;color:var(--navy);width:100%}
+.toast{position:absolute;left:16px;right:16px;bottom:96px;background:var(--navy);color:#fff;padding:14px 16px;border-radius:14px;font-size:14px;line-height:1.4;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:none}
+.overlay{position:absolute;inset:0;background:rgba(11,42,74,.55);display:flex;align-items:flex-end;z-index:5}
+.sheet{background:#fff;width:100%;border-radius:24px 24px 0 0;padding:24px 20px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}
+.typing span{display:inline-block;width:7px;height:7px;border-radius:4px;background:var(--muted);margin-right:4px;animation:b 1s infinite}
+.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.simple main{font-size:17px}
+</style>
+</head>
+<body>
+<div class="phone" id="app" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+var S = {
+  screen:'home', simple:false, offline:false, disc:'full',
+  chat:[], typing:false, caseType:'dowod', step:2, pay:'', submitted:false,
+  orig:false, cal:false, remind:false, intro:true, mic:false,
+  cases:[{t:'Wniosek o paszport dziecka', p:2, of:4, note:'Paszport w produkcji. Powiadomimy, gdy będzie do odbioru.'}]
+};
+
+var I = {
+  home:'<path d="M4 11l8-7 8 7v9H4z"/>',
+  id:'<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M14.5 10h4M14.5 13h3"/>',
+  spark:'<path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/><path d="M18 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
+  car:'<path d="M5 16V11l2-5h10l2 5v5M3 16h18M7 16v2M17 16v2"/>',
+  lic:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h6M7 14h10"/>',
+  check:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>',
+  back:'<path d="M15 6l-6 6 6 6"/>',
+  send:'<path d="M4 12l16-8-6 16-2-7z"/>',
+  ok:'<path d="M5 12l5 5 9-10"/>'
+};
+function ic(n,s,w){return '<svg width="'+(s||22)+'" height="'+(s||22)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(w||1.9)+'" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+I[n]+'</svg>';}
+function esc(t){return String(t).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+var TOPICS = {
+  auto:{
+    intro:'Masz 30 dni od zakupu na rejestrację. Oto, co zrobić:',
+    steps:['Zarejestruj auto — przygotuję wniosek z umowy kupna.','Sprawdź polisę OC: przechodzi na Ciebie razem z autem.','Tablice mogą przyjść pocztą — bez wizyty w wydziale komunikacji.'],
+    src:'Źródło: gov.pl, usługa „Zarejestruj pojazd”', cta:'Przygotuj wniosek o rejestrację', act:'case:auto'},
+  dowod:{
+    intro:'Najpierw zabezpiecz się przed wyłudzeniem. Kolejność:',
+    steps:['Zgłoś utratę — dowód zostanie unieważniony od razu.','Rozważ zastrzeżenie PESEL na czas wymiany dokumentu.','Złóż wniosek o nowy dowód — dane uzupełnię z rejestrów.'],
+    src:'Źródło: gov.pl, usługi „Zgłoś utratę dowodu” i „Zastrzeż PESEL”', cta:'Zgłoś utratę i złóż wniosek', act:'case:dowod'},
+  pismo:{
+    intro:'Masz nowe pismo z Urzędu Skarbowego z terminem 5 listopada. Mogę je streścić prostym językiem.',
+    steps:[], src:'Źródło: Twoja skrzynka e-Doręczeń', cta:'Pokaż streszczenie pisma', act:'go:letter'},
+  paszport:{
+    intro:'Wniosek o paszport dziecka już złożyłeś — jest na etapie 2 z 4 (produkcja). Powiadomię Cię, gdy będzie do odbioru.',
+    steps:[], src:'Źródło: Moje sprawy', cta:'Wróć do startu', act:'go:home'},
+  pesel:{
+    intro:'Zastrzeżenie PESEL utrudnia wzięcie kredytu na Twoje dane. Możesz je włączyć i cofnąć w każdej chwili.',
+    steps:['Zastrzeżenie działa od razu po potwierdzeniu.','Cofnąć je możesz na czas, gdy sam bierzesz kredyt.'],
+    src:'Źródło: gov.pl, usługa „Zastrzeż PESEL”', cta:'Przejdź do zastrzeżenia (prototyp)', act:'toast:Zastrzeżenie PESEL — w prototypie tylko podgląd'},
+  unknown:{
+    intro:'Nie mam jeszcze tej sprawy w prototypie. Spróbuj: „kupiłem auto”, „zgubiłem dowód”, „pismo z urzędu”, „paszport dziecka” albo „zastrzeż PESEL”.',
+    steps:[], src:'', cta:'', act:''}
+};
+function classify(q){
+  q=q.toLowerCase();
+  if(/aut|samoch|pojazd|rejestr/.test(q)) return 'auto';
+  if(/dow[oó]d|zgubi|ukradz|utrat/.test(q)) return 'dowod';
+  if(/pism|urz[aą]d skarb|wezwan|list/.test(q)) return 'pismo';
+  if(/paszport/.test(q)) return 'paszport';
+  if(/pesel|zastrze/.test(q)) return 'pesel';
+  return 'unknown';
+}
+
+var CASES = {
+  dowod:{title:'Wniosek o nowy dowód osobisty', fee:'Bezpłatnie', fields:[
+    {l:'Imię i nazwisko', v:'Jan Przykładowy', s:'z Rejestru PESEL'},
+    {l:'Adres do korespondencji', v:'ul. Przykładowa 1, 00-001 Miasto', s:'z Rejestru Danych Kontaktowych'},
+    {l:'Zdjęcie', v:'Dodane z galerii', s:'Sprawdzone przez AI: tło i oświetlenie OK — ostatecznie oceni urzędnik', ai:true},
+    {l:'Odbiór', v:'Urząd gminy — jedna wizyta, tylko odbiór', s:'Twój wybór'}]},
+  auto:{title:'Wniosek o rejestrację pojazdu', fee:'Opłata wg taryfy urzędu', fields:[
+    {l:'Właściciel', v:'Jan Przykładowy', s:'z Rejestru PESEL'},
+    {l:'VIN', v:'WVWZZZ1KZAW000000', s:'Odczytane przez AI z umowy kupna — sprawdź', ai:true, edit:true},
+    {l:'Data zakupu', v:'27.10.2026', s:'Odczytane przez AI z umowy kupna — sprawdź', ai:true, edit:true},
+    {l:'Dane pojazdu', v:'Przykładowa marka, model, 2019', s:'z Centralnej Ewidencji Pojazdów'},
+    {l:'Tablice', v:'Wysyłka pocztą', s:'Twój wybór'}]}
+};
+
+function set(p){for(var k in p) S[k]=p[k]; render();}
+function go(sc,extra){var p={screen:sc}; if(extra) for(var k in extra) p[k]=extra[k]; set(p); var m=document.querySelector('main'); if(m) m.scrollTop=0;}
+var toastT;
+function toast(msg){var t=document.getElementById('toast'); if(!t) return; t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(function(){t.classList.remove('show');},2600);}
+
+function ask(q){
+  if(!q || !q.trim()) return;
+  S.chat.push({me:true, text:q.trim()});
+  S.typing=true; S.screen='ai'; render();
+  setTimeout(function(){S.typing=false; S.chat.push({me:false, topic:classify(q)}); render(); scrollChat();},900);
+  scrollChat();
+}
+function scrollChat(){var m=document.querySelector('main'); if(m) setTimeout(function(){m.scrollTop=m.scrollHeight;},20);}
+
+function act(a){
+  if(!a) return;
+  var p=a.split(':'), k=p[0], v=p.slice(1).join(':');
+  if(k==='case') go('case',{caseType:v, step:2, pay:'', submitted:false});
+  else if(k==='go') go(v);
+  else if(k==='toast') toast(v);
+}
+
+/* ---------- screens ---------- */
+function home(){
+  var st = '<button class="status" data-a="offline"><span class="dot" style="background:'+(S.offline?'var(--warn)':'var(--ok)')+'"></span><span style="flex:1">'+(S.offline?'Brak połączenia — dokumenty działają offline':'Wszystkie usługi działają')+'</span><span class="small muted">Symuluj '+(S.offline?'online':'offline')+'</span></button>';
+  if(S.simple){
+    return st+
+    '<div style="font-size:26px;font-weight:700">Dzień dobry, Janie</div>'+
+    '<div class="grid2">'+
+      '<button class="big dark" data-go="doc">'+ic('id',40,1.8)+'Pokaż dowód</button>'+
+      '<button class="big blue" data-a="mic">'+ic('mic',40,1.8)+'Zapytaj głosem</button>'+
+      '<button class="big" data-go="letter">'+ic('mail',40,1.8)+'Pisma (1)</button>'+
+      '<button class="big" data-act="case:dowod">'+ic('check',40,1.8)+'Do zrobienia</button>'+
+    '</div><p class="muted">Cztery najważniejsze sprawy. Pozostałe funkcje zobaczysz po wyłączeniu trybu prostego.</p>';
+  }
+  var sug = S.remind ? '' :
+    '<section class="card"><div class="ai-label">'+ic('spark',14,2.2)+'SUGESTIA ASYSTENTA</div>'+
+    '<div style="font-size:17px;font-weight:700;line-height:1.35">Twój dowód osobisty traci ważność za 47 dni</div>'+
+    '<p class="small muted" style="font-size:13px">Złóż wniosek teraz — dane uzupełnię z rejestrów, do urzędu pójdziesz tylko po odbiór.</p>'+
+    '<div class="row"><button class="btn" data-act="case:dowod">Złóż wniosek</button><button class="btn soft" data-a="remind">Przypomnij za tydzień</button></div>'+
+    '<div class="xs muted">Na podstawie daty ważności z Rejestru Dowodów Osobistych</div></section>';
+  var cases = S.cases.map(function(c){return '<div class="list-item"><div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600"><span>'+esc(c.t)+'</span><span class="muted">'+c.p+' z '+c.of+'</span></div><div class="bar"><div style="width:'+(c.p/c.of*100)+'%"></div></div><div class="small muted">'+esc(c.note)+'</div></div>';}).join('');
+  return st+
+  '<button class="search" data-go="ai">'+ic('spark',20,2)+'<span>Zapytaj lub wyszukaj, np. „zgubiłem dowód”</span></button>'+
+  sug+
+  '<div style="display:flex;justify-content:space-between;align-items:baseline"><h2 class="h2">Dokumenty</h2><span class="small muted">dostępne offline</span></div>'+
+  '<div class="grid3"><button class="tile dark" data-go="doc">'+ic('id')+'mDowód</button><button class="tile" data-a="t:Prawo jazdy — w prototypie pokazujemy tylko mDowód">'+ic('lic')+'Prawo jazdy</button><button class="tile" data-a="t:Pojazd — w prototypie pokazujemy tylko mDowód">'+ic('car')+'Pojazd</button></div>'+
+  '<h2 class="h2">Nowe pismo</h2>'+
+  '<button class="list-item" data-go="letter" style="gap:6px"><span class="small muted">e-Doręczenie · 29.10.2026 · Urząd Skarbowy</span><span style="font-size:15px;font-weight:700">Wezwanie do złożenia wyjaśnień</span><span style="font-size:13px;font-weight:600;color:var(--red)">Termin: 5 listopada · Wyjaśnij prostym językiem</span></button>'+
+  '<h2 class="h2">Moje sprawy</h2>'+cases;
+}
+
+function doc(){
+  var name = S.disc!=='age', full=S.disc==='full', age=S.disc==='age';
+  return '<div class="idcard"><div class="wm">PROTOTYP · WZÓR</div>'+
+  '<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:700;letter-spacing:.06em">mDOWÓD · WZÓR</span><span class="badge">PROTOTYP — NIE JEST DOKUMENTEM</span></div>'+
+  '<div style="display:flex;gap:14px"><div style="width:86px;height:108px;border-radius:10px;background:#2B4766;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;flex-shrink:0"><svg width="70" height="80" viewBox="0 0 70 80" aria-hidden="true"><circle cx="35" cy="30" r="15" fill="#8FA3BA"/><path d="M8 80c3-17 14-26 27-26s24 9 27 26z" fill="#8FA3BA"/></svg></div>'+
+  '<div style="display:flex;flex-direction:column;gap:8px;font-size:13px">'+
+  (name?'<div><div class="lbl">Imię i nazwisko</div><div style="font-weight:700;font-size:16px">Jan Przykładowy</div></div>':'')+
+  (full?'<div><div class="lbl">Data urodzenia</div><div>01.01.1990 (wzór)</div></div><div><div class="lbl">PESEL</div><div>00000000000 (wzór)</div></div>':'')+
+  (S.disc==='id'?'<div><div class="lbl">PESEL</div><div>ukryty</div></div>':'')+
+  (age?'<div style="display:flex;align-items:center;gap:10px;margin-top:8px"><span style="width:48px;height:48px;border-radius:24px;background:#fff;color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800">18+</span><span style="font-size:14px;line-height:1.4">Osoba pełnoletnia<br>potwierdzone</span></div>':'')+
+  '</div></div><div style="font-size:12px;color:#B9C6D6">'+(S.offline?'Tryb offline · ostatnia synchronizacja dziś 08:02 · dokument ważny':'Ostatnia synchronizacja dziś 08:02 · działa także bez internetu')+'</div></div>'+
+  '<div class="seg" role="group" aria-label="Zakres udostępnianych danych">'+
+  ['full','Pełne dane','id','Bez PESEL','age','Tylko 18+'].reduce(function(a,_,i,arr){if(i%2) return a; return a+'<button data-disc="'+arr[i]+'" aria-pressed="'+(S.disc===arr[i])+'">'+arr[i+1]+'</button>';},'')+
+  '</div>'+
+  '<section class="card"><div class="ai-label">'+ic('spark',14,2.2)+'STRAŻNIK PRYWATNOŚCI</div><p style="font-size:14px">Sklep prosi o potwierdzenie pełnoletności. Wystarczy „Tylko 18+” — nie musisz pokazywać daty urodzenia ani PESEL.</p>'+
+  (age?'<div class="small" style="color:var(--ok);font-weight:600">Udostępniasz tylko potwierdzenie 18+</div>':'<button class="btn" style="align-self:flex-start" data-disc="age">Udostępnij tylko 18+</button>')+'</section>'+
+  '<div class="card" style="flex-direction:row;align-items:center;gap:14px"><svg width="76" height="76" viewBox="0 0 9 9" role="img" aria-label="Kod QR do weryfikacji — wzór"><rect width="9" height="9" fill="#fff"/><path d="M0 0h3v3H0zM6 0h3v3H6zM0 6h3v3H0zM4 0h1v2H4zM4 3h2v1H4zM3 4h1v1H3zM5 5h1v2H5zM7 4h1v1H7zM4 7h1v2H4zM7 6h2v1H7zM6 8h1v1H6z" fill="#0B2A4A"/><path d="M1 1h1v1H1zM7 1h1v1H7zM1 7h1v1H1z" fill="#fff"/></svg><p class="muted" style="font-size:13px">Weryfikujący widzi tylko zakres wybrany powyżej. Kod działa bez internetu.</p></div>';
+}
+
+function ai(){
+  var out = '<div><h1 class="h1">Asystent spraw</h1><p class="small muted">Podpowiada i wypełnia. Wysłanie i podpis zawsze zatwierdzasz Ty.</p></div>';
+  out += '<div class="bubble">Opisz swoją sytuację własnymi słowami. Powiem, co trzeba zrobić, w jakim terminie, i przygotuję wniosek.</div>';
+  if(!S.chat.length){
+    out += '<div class="small muted">Najczęstsze sprawy</div>';
+    ['Kupiłem używane auto','Zgubiłem dowód osobisty','Wyjaśnij pismo z urzędu','Jak zastrzec PESEL?'].forEach(function(c){out+='<button class="chip" data-ask="'+esc(c)+'">'+c+'</button>';});
+  }
+  S.chat.forEach(function(m){
+    if(m.me){out+='<div class="bubble me">'+esc(m.text)+'</div>'; return;}
+    var t=TOPICS[m.topic];
+    out+='<div class="bubble"><div>'+t.intro+'</div>'+
+      (t.steps.length?'<ol>'+t.steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol>':'')+
+      (t.src?'<div class="xs muted">'+t.src+'</div>':'')+
+      (t.cta?'<button class="btn" data-act="'+esc(t.act)+'">'+t.cta+'</button>':'')+'</div>';
+  });
+  if(S.typing) out+='<div class="bubble typing" aria-label="Asystent pisze"><div><span></span><span></span><span></span></div></div>';
+  if(S.chat.length) out+='<button class="btn link" style="align-self:flex-start;min-height:44px" data-a="reset">Nowa rozmowa</button>';
+  out+='<form class="composer" id="askform"><label for="ask" class="sr">Twoje pytanie</label><input id="ask" autocomplete="off" placeholder="Napisz, np. „kupiłem auto”"><button class="round" type="submit" aria-label="Wyślij">'+ic('send',20,2)+'</button><button class="round" type="button" data-a="mic" aria-label="Mów do asystenta">'+ic('mic',20,2)+'</button></form>';
+  out+='<p class="xs muted">Asystent nie widzi Twoich danych bez zgody i nie podejmuje decyzji administracyjnych. W prototypie rozpoznaje kilka przykładowych spraw.</p>';
+  return out;
+}
+
+function kase(){
+  var c=CASES[S.caseType];
+  var out='<button class="back" data-go="home">'+ic('back',18,2)+'Wróć</button>';
+  if(S.submitted){
+    return out+'<div class="okicon">'+ic('ok',32,2.4)+'</div><h1 class="h1" style="font-size:22px">Wniosek złożony</h1><p class="muted" style="font-size:15px">„'+c.title+'” trafił do urzędu. Status śledzisz w „Moich sprawach”. Powiadomimy Cię, gdy urząd zmieni status.</p><button class="btn" style="align-self:flex-start" data-go="home">Wróć do startu</button>';
+  }
+  out+='<h1 class="h1">'+c.title+'</h1><div class="steps">'+[1,2,3,4].map(function(i){return '<div class="'+(i<=S.step?'on':'')+'"></div>';}).join('')+'</div>';
+  if(S.step===2){
+    out+='<div class="small muted" style="font-size:13px">Krok 2 z 4 · Sprawdź dane uzupełnione automatycznie</div>';
+    c.fields.forEach(function(f,i){
+      out+='<div class="field"><label class="small muted" for="f'+i+'">'+f.l+'</label>'+
+        (f.edit?'<input id="f'+i+'" value="'+esc(f.v)+'">':'<div id="f'+i+'" style="font-size:15px;font-weight:600">'+esc(f.v)+'</div>')+
+        (f.ai?'<div class="aiflag">'+f.s+'</div>':'<div class="xs muted">'+f.s+'</div>')+'</div>';
+    });
+    out+='<button class="btn block" style="min-height:52px" data-a="step3">Sprawdziłem — dalej</button>';
+  } else if(S.step===3){
+    out+='<div class="small muted" style="font-size:13px">Krok 3 z 4 · Opłata</div><div class="card"><div style="display:flex;justify-content:space-between;font-weight:700"><span>Do zapłaty</span><span>'+c.fee+'</span></div>'+
+      (c.fee==='Bezpłatnie'?'<p class="small muted">Wymiana dowodu jest bezpłatna. Przejdź do podpisu.</p>':'<div class="pay">'+['BLIK','Google Pay','Apple Pay'].map(function(p){return '<button data-pay="'+p+'" aria-pressed="'+(S.pay===p)+'">'+p+'</button>';}).join('')+'</div><p class="xs muted">Płatność jest symulowana — prototyp niczego nie obciąża.</p>')+
+      '</div><button class="btn block" style="min-height:52px" data-a="step4"'+(c.fee!=='Bezpłatnie'&&!S.pay?' disabled style="min-height:52px;opacity:.5"':'')+'>Dalej — podpis</button>';
+  } else {
+    out+='<div class="small muted" style="font-size:13px">Krok 4 z 4 · Podpis</div><div class="card"><p style="font-size:14px">Podpiszesz wniosek Profilem Zaufanym. Przed podpisem możesz jeszcze wrócić i poprawić dane.</p><div class="ai-label">'+ic('spark',14,2.2)+'ASYSTENT SPRAWDZIŁ</div><p class="small muted" style="font-size:13px">Wszystkie wymagane pola są wypełnione. Pola odczytane przez AI zostały przez Ciebie zatwierdzone.</p></div>'+
+      '<button class="btn block" style="min-height:52px" data-a="submit">Podpisz i wyślij</button><button class="btn link" data-a="step2">Wróć do danych</button>';
+  }
+  return out;
+}
+
+function letter(){
+  return '<div><div class="small muted">e-Doręczenie · 29.10.2026 · Urząd Skarbowy</div><h1 class="h1">Wezwanie do złożenia wyjaśnień</h1></div>'+
+  '<section class="card"><div class="ai-label">'+ic('spark',14,2.2)+'W SKRÓCIE · STRESZCZENIE AI</div><ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.5"><li>Urząd prosi o wyjaśnienie rozbieżności w zeznaniu za 2025 r.</li><li><strong>Termin: 7 dni od doręczenia — do 5 listopada 2026.</strong></li><li>Możesz odpowiedzieć w aplikacji i podpisać odpowiedź.</li></ul><div class="xs muted">Wiążąca jest treść oryginału. Streszczenie może zawierać błędy.</div></section>'+
+  '<button class="btn block" data-a="cal">'+(S.cal?'Przypomnienie dodane — 3 i 5 listopada':'Dodaj termin do przypomnień')+'</button>'+
+  '<button class="btn ghost block" data-ask="Pomóż mi odpowiedzieć na pismo z urzędu">Przygotuj odpowiedź z asystentem</button>'+
+  '<button class="btn link" style="min-height:44px" data-a="orig" aria-expanded="'+S.orig+'">'+(S.orig?'Ukryj oryginał':'Pokaż oryginał pisma')+'</button>'+
+  (S.orig?'<div class="card muted" style="font-size:13px;line-height:1.6">Naczelnik Urzędu Skarbowego, działając na podstawie przepisów Ordynacji podatkowej, wzywa do złożenia wyjaśnień dotyczących zeznania podatkowego za rok 2025 w terminie 7 dni od dnia doręczenia niniejszego pisma. [Dalsza treść pisma, podstawa prawna i pouczenie — wzór dla prototypu.]</div>':'');
+}
+
+function render(){
+  var app=document.getElementById('app');
+  app.className='phone'+(S.simple?' simple':'');
+  var body = S.screen==='home'?home():S.screen==='doc'?doc():S.screen==='ai'?ai():S.screen==='case'?kase():letter();
+  var navs=[['home','Start','home'],['doc','Dokumenty','id'],['ai','Asystent','spark'],['letter','Pisma','mail']];
+  var navActive = S.screen==='case'?'':S.screen;
+  var html='<header><div><div class="brand">mObywatel <span>3.0</span></div><div class="tag">PROTOTYP KONCEPCYJNY</div></div><button class="toggle" data-a="simple" aria-pressed="'+S.simple+'">Tryb prosty</button></header>'+
+  '<main>'+body+'</main>'+
+  '<nav aria-label="Nawigacja główna">'+navs.map(function(n){return '<button data-go="'+n[0]+'"'+(navActive===n[0]?' aria-current="page"':'')+'>'+ic(n[2])+n[1]+'</button>';}).join('')+'</nav>'+
+  '<div class="toast" id="toast" role="status"></div>';
+  if(S.intro) html+='<div class="overlay"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="introT"><h2 class="h1" id="introT">mObywatel 3.0 — prototyp koncepcyjny</h2><p class="muted" style="font-size:14px">Niezależna koncepcja do dyskusji. To nie jest aplikacja rządowa, a pokazane dokumenty i dane są wzorami. Nic nie jest wysyłane ani zapisywane.</p><p style="font-size:14px">Wypróbuj: asystenta AI, udostępnianie „tylko 18+”, streszczenie pisma, tryb offline i tryb prosty.</p><button class="btn block" data-a="intro">Rozumiem, zaczynamy</button></div></div>';
+  if(S.mic) html+='<div class="overlay"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="micT"><h2 class="h1" id="micT">Mów do asystenta</h2><p class="muted" style="font-size:14px">W prototypie wybierz przykładowe zdanie. W docelowej wersji zobaczysz transkrypcję przed wysłaniem.</p>'+['Zgubiłem dowód osobisty','Kupiłem używane auto','Co jest w piśmie z urzędu?'].map(function(c){return '<button class="chip" data-ask="'+c+'">„'+c+'”</button>';}).join('')+'<button class="btn link" style="min-height:44px" data-a="micx">Anuluj</button></div></div>';
+  app.innerHTML=html;
+  var f=document.getElementById('askform');
+  if(f) f.addEventListener('submit',function(e){e.preventDefault(); var i=document.getElementById('ask'); var v=i.value; i.value=''; ask(v);});
+}
+
+document.getElementById('app').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b || b.disabled) return;
+  var d=b.dataset;
+  if(d.go){ if(d.go==='ai'&&S.screen==='ai') return; go(d.go); return; }
+  if(d.act){ act(d.act); return; }
+  if(d.ask){ S.mic=false; ask(d.ask); return; }
+  if(d.disc){ set({disc:d.disc}); return; }
+  if(d.pay){ set({pay:d.pay}); return; }
+  var a=d.a; if(!a) return;
+  if(a.indexOf('t:')===0){ toast(a.slice(2)); return; }
+  switch(a){
+    case 'simple': go('home',{simple:!S.simple}); break;
+    case 'offline': set({offline:!S.offline}); toast(S.offline?'Symulacja: brak sieci. Dokumenty nadal działają.':'Połączenie przywrócone'); break;
+    case 'remind': set({remind:true}); toast('Przypomnę za tydzień'); break;
+    case 'reset': set({chat:[]}); break;
+    case 'mic': set({mic:true}); break;
+    case 'micx': set({mic:false}); break;
+    case 'intro': set({intro:false}); break;
+    case 'step2': set({step:2}); break;
+    case 'step3': set({step:3}); break;
+    case 'step4': set({step:4}); break;
+    case 'submit':
+      var c=CASES[S.caseType];
+      if(!S.cases.some(function(x){return x.t===c.title;})) S.cases.unshift({t:c.title,p:1,of:4,note:'Wniosek złożony dziś. Urząd ma go w kolejce.'});
+      if(S.caseType==='dowod') S.remind=true;
+      set({submitted:true}); break;
+    case 'cal': set({cal:true}); toast('Przypomnienia: 3 i 5 listopada'); break;
+    case 'orig': set({orig:!S.orig}); break;
+  }
+});
+render();
+})();
+</script>
+</body>
+</html>
